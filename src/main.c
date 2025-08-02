@@ -1,6 +1,5 @@
 #include "player.h"
 #include <raylib.h>
-#include <stdlib.h>
 
 //----------------------------------------------------------------------------------
 // Defines
@@ -83,6 +82,7 @@ void GameDraw() {
         (Vector2){0, 0}, 0.0f, RAYWHITE);
 
     for (int i = 0; i < spriteCount; i++)
+        // sprites[i]->draw(sprites[i]);
         sprites[i]->draw(sprites[i]);
 
     EndDrawing();

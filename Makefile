@@ -1,20 +1,26 @@
-default: main.o player.o enemy.o bullet.o fireball.o
-	gcc main.o player.o enemy.o bullet.o fireball.o -o game -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+default: build/main.o build/player.o build/enemy.o build/bullet.o build/fireball.o
+	gcc $^ -o build/game -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
-main.o: main.c
-	gcc -I. -c main.c
+build/%.o: src/%.c include/%.h
+	gcc -Iinclude -c $< -o $@
 
-player.o: player.c player.h sprite.h
-	gcc -I. -c player.c
-
-enemy.o: enemy.c enemy.h sprite.h
-	gcc -I. -c enemy.c
-
-bullet.o: bullet.c bullet.h sprite.h
-	gcc -I. -c bullet.c
-
-fireball.o: fireball.c fireball.h sprite.h
-	gcc -I. -c fireball.c
+build/main.o: src/main.c
+	gcc -Iinclude -c $< -o $@
+#
+# main.o: src/main.c
+# 	gcc -Iinclude -c src/main.c
+#
+# player.o: src/player.c include/player.h include/sprite.h
+# 	gcc -Iinclude -c src/player.c
+#
+# enemy.o: src/enemy.c include/enemy.h include/sprite.h
+# 	gcc -Iinclude -c src/enemy.c
+#
+# bullet.o: src/bullet.c include/bullet.h include/sprite.h
+# 	gcc -Iinclude -c src/bullet.c
+#
+# fireball.o: src/fireball.c include/fireball.h include/sprite.h
+# 	gcc -Iinclude -c src/fireball.c
 
 clean:
-	rm -rf *.o game
+	rm -rf build/*
