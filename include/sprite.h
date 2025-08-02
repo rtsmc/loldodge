@@ -14,4 +14,8 @@ typedef struct Sprite {
   Vector2 vel;
 } Sprite;
 
+void SpriteMove(Sprite* self);
+void SpriteUpdate(Sprite* self);
+void SpriteDraw(Sprite* self);
+
 #endif

@@ -1,4 +1,5 @@
 #include "player.h"
+#include "sprite.h"
 #include <raylib.h>
 
 //----------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ void GameInit() {
 
     playerTexture = LoadTexture("./assets/knight.png");
     PlayerInit(&player, playerTexture,
-               (Vector2){screenWidth * 0.5f, screenHeight * 0.5f},
+               (Vector2){screenWidth/2.0f, screenHeight/2.0f},
                PLAYER_SPEED);
     sprites[spriteCount++] = (Sprite *)&player;
 }
@@ -68,7 +69,7 @@ void GameUpdate() {
     screenHeight = GetScreenHeight();
 
     for (int i = 0; i < spriteCount; i++)
-        sprites[i]->update(sprites[i]);
+        SpriteUpdate(sprites[i]);
 }
 
 void GameDraw() {
@@ -82,8 +83,7 @@ void GameDraw() {
         (Vector2){0, 0}, 0.0f, RAYWHITE);
 
     for (int i = 0; i < spriteCount; i++)
-        // sprites[i]->draw(sprites[i]);
-        sprites[i]->draw(sprites[i]);
+        SpriteDraw(sprites[i]);
 
     EndDrawing();
 }
