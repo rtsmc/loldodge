@@ -38,7 +38,6 @@ static void PlayerUpdate(Sprite *self) {
             p->hasDest = false;
         }
     }
-    SpriteMove(self);
 }
 
 static void PlayerDraw(Sprite *self) {
@@ -54,9 +53,13 @@ static void PlayerDraw(Sprite *self) {
         RAYWHITE);
 }
 
+static const SpriteVtbl playerVtbl = {
+    PlayerUpdate,
+    PlayerDraw
+};
+
 void PlayerInit(Player *p, Texture2D tex, Vector2 startPos, float moveSpeed) {
-    p->base.update = PlayerUpdate;
-    p->base.draw = PlayerDraw;
+    p->base.vtbl = &playerVtbl;
     p->base.tex = tex;
     p->base.destRec = (Rectangle){startPos.x, startPos.y, tex.width * 1.8f,
                                   tex.height * 1.8f};

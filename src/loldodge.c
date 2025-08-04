@@ -1,4 +1,5 @@
 #include "player.h"
+#include "enemy.h"
 #include "sprite.h"
 #include <raylib.h>
 
@@ -7,7 +8,8 @@
 //----------------------------------------------------------------------------------
 #define PLAYER_SPEED 300.0f
 
-#define MAX_SPRITES 100
+#define MAX_ENEMIES 100
+#define MAX_SHOTS 100
 
 //----------------------------------------------------------------------------------
 // Global Variables
@@ -21,8 +23,8 @@ static bool gameOver = false;
 static Player player = {0};
 static Texture2D playerTexture;
 
-static Sprite *sprites[MAX_SPRITES] = {0};
-static int spriteCount;
+static Enemy *enemy[MAX_ENEMIES] = {0};
+static int enemyCount;
 static Texture2D bgTexture;
 
 //------------------------------------------------------------------------------------
@@ -61,15 +63,19 @@ void GameInit() {
     PlayerInit(&player, playerTexture,
                (Vector2){screenWidth/2.0f, screenHeight/2.0f},
                PLAYER_SPEED);
-    sprites[spriteCount++] = (Sprite *)&player;
+    // sprites[spriteCount++] = (Sprite *)&player;
 }
 
 void GameUpdate() {
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
 
-    for (int i = 0; i < spriteCount; i++)
-        SpriteUpdate(sprites[i]);
+    SpriteUpdate((Sprite*)&player);
+    SpriteMove((Sprite*)&player);
+    // for (int i = 0; i < spriteCount; i++) {
+    //     SpriteUpdate(sprites[i]);
+    //     SpriteMove(sprites[i]);
+    // }
 }
 
 void GameDraw() {
@@ -82,8 +88,9 @@ void GameDraw() {
         (Rectangle){0, 0, (float)screenWidth, (float)screenHeight},
         (Vector2){0, 0}, 0.0f, RAYWHITE);
 
-    for (int i = 0; i < spriteCount; i++)
-        SpriteDraw(sprites[i]);
+    SpriteDraw((Sprite*)&player);
+    // for (int i = 0; i < spriteCount; i++)
+    //     SpriteDraw(sprites[i]);
 
     EndDrawing();
 }
