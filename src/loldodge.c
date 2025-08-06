@@ -6,7 +6,8 @@
 //----------------------------------------------------------------------------------
 // Defines
 //----------------------------------------------------------------------------------
-#define PLAYER_SPEED 300.0f
+#define PLAYER_SPEED 270.0f
+#define ENEMY_SPEED 170.0f
 
 #define MAX_ENEMIES 100
 #define MAX_SHOTS 100
@@ -23,9 +24,12 @@ static bool gameOver = false;
 static Player player = {0};
 static Texture2D playerTexture;
 
-static Enemy *enemy[MAX_ENEMIES] = {0};
-static int enemyCount;
+static Enemy enemy[MAX_ENEMIES] = {0};
+static Texture2D enemyTexture;
 static Texture2D bgTexture;
+
+float spawnTimer = 0.0f;
+float spawnInterval = 5.0f;
 
 //------------------------------------------------------------------------------------
 // Game Functions
@@ -59,11 +63,29 @@ void GameInit() {
     bgTexture = LoadTextureFromImage(bgImage);
     UnloadImage(bgImage);
 
-    playerTexture = LoadTexture("./assets/knight.png");
+    playerTexture = LoadTexture("./assets/knight_blue.png");
     PlayerInit(&player, playerTexture,
                (Vector2){screenWidth/2.0f, screenHeight/2.0f},
                PLAYER_SPEED);
-    // sprites[spriteCount++] = (Sprite *)&player;
+
+    enemyTexture = LoadTexture("./assets/knight.png");
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        EnemyInit(&enemy[i], enemyTexture, ENEMY_SPEED, (Sprite*)&player);
+    }
+}
+
+void SpawnEnemies() {
+    spawnTimer += GetFrameTime();
+    if (spawnTimer < spawnInterval)
+        return;
+    spawnTimer = 0.0f;
+
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (!enemy[i].active) {
+            EnemySpawn(&enemy[i]);
+            break;
+        }
+    }
 }
 
 void GameUpdate() {
@@ -72,10 +94,14 @@ void GameUpdate() {
 
     SpriteUpdate((Sprite*)&player);
     SpriteMove((Sprite*)&player);
-    // for (int i = 0; i < spriteCount; i++) {
-    //     SpriteUpdate(sprites[i]);
-    //     SpriteMove(sprites[i]);
-    // }
+
+    SpawnEnemies();
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (enemy[i].active) {
+            SpriteUpdate((Sprite*)&enemy[i]);
+            SpriteMove((Sprite*)&enemy[i]);
+        }
+    }
 }
 
 void GameDraw() {
@@ -89,13 +115,16 @@ void GameDraw() {
         (Vector2){0, 0}, 0.0f, RAYWHITE);
 
     SpriteDraw((Sprite*)&player);
-    // for (int i = 0; i < spriteCount; i++)
-    //     SpriteDraw(sprites[i]);
+    for (int i = 0; i < MAX_ENEMIES; i++) {
+        if (enemy[i].active)
+            SpriteDraw((Sprite*)&enemy[i]);
+    }
 
     EndDrawing();
 }
 
 void GameUnload() {
     UnloadTexture(playerTexture);
+    UnloadTexture(enemyTexture);
     UnloadTexture(bgTexture);
 }

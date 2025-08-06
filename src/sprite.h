@@ -23,5 +23,6 @@ struct Sprite {
 void SpriteUpdate(Sprite *self);
 void SpriteDraw(Sprite *self);
 void SpriteMove(Sprite *self);
+Vector2 SpritePos(Sprite *self);
 
 #endif

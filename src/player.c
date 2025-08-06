@@ -22,10 +22,14 @@ static void PlayerUpdate(Sprite *self) {
                       Clamp(GetMouseY(), 0 + h / 2, GetScreenHeight() - h / 2)};
         p->hasDest = true;
 
-        Vector2 delta = (Vector2){p->dest.x - p->base.destRec.x,
-                                  p->dest.y - p->base.destRec.y};
+        Vector2 delta = Vector2Subtract(p->dest, SpritePos(self));
         p->base.vel =
             Vector2Scale(delta, p->base.moveSpeed / Vector2Length(delta));
+    }
+
+    if (IsKeyPressed(KEY_S)) {
+        p->base.vel = Vector2Zero();
+        p->hasDest = false;
     }
 
     if (p->hasDest) {
@@ -40,22 +44,8 @@ static void PlayerUpdate(Sprite *self) {
     }
 }
 
-static void PlayerDraw(Sprite *self) {
-    int frameWidth = self->tex.width;
-    int frameHeight = self->tex.height;
-    int sourceWidth = frameWidth;
-    sourceWidth = self->vel.x >= 0 ? sourceWidth : -1 * sourceWidth;
-
-    DrawTexturePro(
-        self->tex,
-        (Rectangle){0.0f, 0.0f, (float)sourceWidth, (float)frameHeight},
-        self->destRec, (Vector2){(float)frameWidth, (float)frameHeight}, 0.0f,
-        RAYWHITE);
-}
-
 static const SpriteVtbl playerVtbl = {
     PlayerUpdate,
-    PlayerDraw
 };
 
 void PlayerInit(Player *p, Texture2D tex, Vector2 startPos, float moveSpeed) {
